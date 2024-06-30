@@ -16,14 +16,28 @@
   font-size: 0.75rem;
   color: #fff;
   text-align: center;
+  z-index: 10;
 }
 
-.progressBar > div {
+.progressBar > .bar {
   padding: 0.125rem;
-  transition: width 0.3s ease-in;
+  transition: width 0.3s ease-in, opacity 0.2s ease-in-out;
+
+  min-width: min-content;
+  text-decoration: none;
 }
 
-.progressBar > div + div {
+.progressBar > .bar,
+.progressBar > .bar:visited,
+.progressBar > .bar:active {
+  color: inherit;
+}
+
+.progressBar > .bar:hover {
+  opacity: 0.75;
+}
+
+.progressBar > .bar + .bar {
   border-left: 2px solid #fff;
 }
 

@@ -60,6 +60,7 @@ export interface QueueJobJson {
   attemptsMade: number;
   finishedOn?: number | null;
   processedOn?: number | null;
+  processedBy?: string | null;
   delay?: number;
   timestamp: number;
   failedReason: string;
@@ -70,12 +71,17 @@ export interface QueueJobJson {
   parentKey?: string;
 }
 
+export interface QueueJobOptions {
+  delay?: number;
+  attempts?: number;
+}
+
 export interface RedisStats {
   version: string;
   mode: RedisInfo['redis_mode'];
   port: number;
   os: string;
-  uptime: string;
+  uptime: number;
   memory: {
     total: number;
     used: number;
@@ -93,6 +99,7 @@ export interface AppJob {
   name: QueueJobJson['name'];
   timestamp: QueueJobJson['timestamp'];
   processedOn?: QueueJobJson['processedOn'];
+  processedBy?: QueueJobJson['processedBy'];
   finishedOn?: QueueJobJson['finishedOn'];
   progress: QueueJobJson['progress'];
   attempts: QueueJobJson['attemptsMade'];
@@ -105,6 +112,8 @@ export interface AppJob {
   isFailed: boolean;
 }
 
+export type QueueType = 'bull' | 'bullmq';
+
 export interface AppQueue {
   name: string;
   description?: string;
@@ -116,6 +125,7 @@ export interface AppQueue {
   allowRetries: boolean;
   allowCompletedRetries: boolean;
   isPaused: boolean;
+  type: QueueType;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put';
@@ -125,6 +135,7 @@ export interface BullBoardRequest {
   queues: BullBoardQueues;
   query: Record<string, any>;
   params: Record<string, any>;
+  body: Record<string, any>;
 }
 
 export type ControllerHandlerReturnType = {
@@ -200,9 +211,34 @@ export type UIConfig = Partial<{
   miscLinks: Array<IMiscLink>;
   favIcon: FavIcon;
   locale: { lng?: string };
+  dateFormats?: DateFormats;
 }>;
 
 export type FavIcon = {
   default: string;
   alternative: string;
+};
+
+export type DateFormats = {
+  /**
+   * When timestamp is in same day (today)
+   *
+   * @example `hh:mm:ss`
+   * @see https://date-fns.org/v3.6.0/docs/format
+   */
+  short?: string;
+
+  /**
+   * When timestamp is in same year
+   *
+   * @example `MM-dd hh:mm:ss`
+   * @see https://date-fns.org/v3.6.0/docs/format
+   */
+  common?: string;
+
+  /**
+   * @example `yyyy-MM-dd hh:mm:ss`
+   * @see https://date-fns.org/v3.6.0/docs/format
+   */
+  full?: string;
 };

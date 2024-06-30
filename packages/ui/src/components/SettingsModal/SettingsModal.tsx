@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { InputField } from '../Form/InputField/InputField';
-import { SelectField } from '../Form/SelectField/InputField';
+import { SelectField } from '../Form/SelectField/SelectField';
 import { SwitchField } from '../Form/SwitchField/SwitchField';
 import { Modal } from '../Modal/Modal';
 import { availableJobTabs } from '../../hooks/useDetailsTabs';
@@ -17,6 +17,7 @@ const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15];
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   const {
+    language,
     pollingInterval,
     jobsPerPage,
     confirmQueueActions,
@@ -28,10 +29,21 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     defaultJobTab,
     setSettings,
   } = useSettingsStore((state) => state);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN'];
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
+      <SelectField
+        label={t('SETTINGS.LANGUAGE')}
+        id="language"
+        options={languages.map((lng) => ({ text: lng, value: lng }))}
+        value={language}
+        onChange={(event) => {
+          i18n.changeLanguage(event.target.value);
+          setSettings({ language: event.target.value });
+        }}
+      />
       <SelectField
         label={t('SETTINGS.POLLING_INTERVAL')}
         id="polling-interval"
